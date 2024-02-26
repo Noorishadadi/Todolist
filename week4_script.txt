@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  max-width: 400px;
+  width: 100%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  margin-top: 0;
+  text-align: center;
+}
+
+input[type="text"] {
+  width: calc(100% - 70px);
+  padding: 8px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 8px 16px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.completed {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+button:hover {
+  background-color: #ddd;
+}
+
+</style
+</head>
+<body>
+  <div class="container">
+    <h1>To-Do List</h1>
+    <input type="text" id="taskInput" placeholder="Add new task...">
+    <button onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      loadTasks();
+    });
+
+    function addTask() {
+      const taskInput = document.getElementById("taskInput");
+      const taskText = taskInput.value.trim();
+      if (taskText !== "") {
+        const taskList = document.getElementById("taskList");
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <input type="checkbox" onchange="toggleTaskCompletion(this)">
+          <span>${taskText}</span>
+          <button onclick="editTask(this)">Edit</button>
+          <button onclick="deleteTask(this)">Delete</button>
+        `;
+        taskList.appendChild(li);
+        saveTasks();
+        taskInput.value = "";
+      } else {
+        alert("Please enter a task!");
+      }
+    }
+
+    function editTask(editBtn) {
+      const li = editBtn.parentElement;
+      const span = li.querySelector("span");
+      const newTaskText = prompt("Edit task:", span.textContent.trim());
+      if (newTaskText !== null && newTaskText.trim() !== "") {
+        span.textContent = newTaskText.trim();
+        saveTasks();
+      }
+    }
+
+    function deleteTask(deleteBtn) {
+      const li = deleteBtn.parentElement;
+      li.remove();
+      saveTasks();
+    }
+
+    function toggleTaskCompletion(checkbox) {
+      const li = checkbox.parentElement;
+      li.classList.toggle("completed");
+      saveTasks();
+    }
+
+    function saveTasks() {
+      const taskList = document.getElementById("taskList").innerHTML;
+      localStorage.setItem("tasks", taskList);
+    }
+
+    function loadTasks() {
+      const savedTasks = localStorage.getItem("tasks");
+      if (savedTasks) {
+        document.getElementById("taskList").innerHTML = savedTasks;
+      }
+    }
+  </script>
+</body>
+</html>
